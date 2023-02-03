@@ -3,6 +3,7 @@ package com.projects.rest.webservices.learnrest.controller;
 import com.projects.rest.webservices.learnrest.entity.User;
 import com.projects.rest.webservices.learnrest.exception.UserNotFoundException;
 import com.projects.rest.webservices.learnrest.service.UserDAOService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -43,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user){
         User savedUser = userDAOService.save(user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

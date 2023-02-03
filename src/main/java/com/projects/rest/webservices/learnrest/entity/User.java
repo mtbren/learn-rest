@@ -1,10 +1,15 @@
 package com.projects.rest.webservices.learnrest.entity;
 
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 
 public class User {
     private int id;
+    @Size(min = 2, message = "Name must be atleast 2 chars long !")
     private String name;
+    @Past(message = "Birth Date cannot be in the future !")
     private LocalDate birthDate;
 
     public User(int id, String name, LocalDate birthDate) {
