@@ -4,6 +4,8 @@ import com.projects.rest.webservices.learnrest.entity.User;
 import com.projects.rest.webservices.learnrest.exception.UserNotFoundException;
 import com.projects.rest.webservices.learnrest.service.UserDAOService;
 import jakarta.validation.Valid;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -29,13 +31,19 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable int id){
+    public EntityModel<User> getUser(@PathVariable int id){
         User user = userDAOService.findOne(id);
 
         if(user == null)
             throw new UserNotFoundException("id="+id);
 
-        return user;
+        EntityModel<User> entityModel = EntityModel.of(user);
+        WebMvcLinkBuilder link = WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsers());
+
+        entityModel.add(link.withRel("all-users"));
+
+        return entityModel;
     }
 
     @DeleteMapping("/users/{id}")
