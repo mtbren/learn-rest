@@ -2,6 +2,7 @@ package com.projects.rest.webservices.learnrest.controller;
 
 import com.projects.rest.webservices.learnrest.entity.User;
 import com.projects.rest.webservices.learnrest.exception.UserNotFoundException;
+import com.projects.rest.webservices.learnrest.repo.UserRepository;
 import com.projects.rest.webservices.learnrest.service.UserDAOService;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
@@ -12,32 +13,33 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-public class UserController {
+public class UserController2 {
 
     //@Autowired
-    private UserDAOService userDAOService;
+    private UserRepository userRepository;
 
-    public UserController(UserDAOService daoService){
-        this.userDAOService = daoService;
+    public UserController2(UserRepository userRepository){
+        this.userRepository = userRepository;
     }
 
-    //@RequestMapping(method = RequestMethod.GET, path="/users")
-    //@GetMapping(path="/users")
-    @GetMapping("/users")
+    //@RequestMapping(method = RequestMethod.GET, path="jpa/users")
+    //@GetMapping(path="jpa/users")
+    @GetMapping("/jpa/users")
     public List<User> getAllUsers(){
-        return userDAOService.findAll();
+        return userRepository.findAll();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/jpa/users/{id}")
     public EntityModel<User> getUser(@PathVariable int id){
-        User user = userDAOService.findOne(id);
+        Optional<User> user = userRepository.findById(id);
 
-        if(user == null)
+        if(user.isEmpty())
             throw new UserNotFoundException("id="+id);
 
-        EntityModel<User> entityModel = EntityModel.of(user);
+        EntityModel<User> entityModel = EntityModel.of(user.get());
         WebMvcLinkBuilder link = WebMvcLinkBuilder.linkTo(
                 WebMvcLinkBuilder.methodOn(this.getClass()).getAllUsers());
 
@@ -46,14 +48,14 @@ public class UserController {
         return entityModel;
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/jpa/users/{id}")
     public void deleteUser(@PathVariable int id){
-        userDAOService.deleteById(id);
+        userRepository.deleteById(id);
     }
 
-    @PostMapping("/users")
+    @PostMapping("/jpa/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user){
-        User savedUser = userDAOService.save(user);
+        User savedUser = userRepository.save(user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

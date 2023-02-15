@@ -1,21 +1,30 @@
 package com.projects.rest.webservices.learnrest.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
+@Entity(name="user_details")
 public class User {
+    @Id
+    @GeneratedValue
     private int id;
     @Size(min = 2, message = "Name must be atleast 2 chars long !")
     // Renaming the property for the JSON response
-    @JsonProperty("user_name")
+    //@JsonProperty("user_name")
     private String name;
     @Past(message = "Birth Date cannot be in the future !")
     // Renaming the property for the JSON response
-    @JsonProperty("birth_date")
+    //@JsonProperty("birth_date")
     private LocalDate birthDate;
+
+    public User() {
+    }
 
     public User(int id, String name, LocalDate birthDate) {
         this.id = id;
