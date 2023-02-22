@@ -22,7 +22,7 @@ public class SpringSecurityConfiguration {
         // #2. If a request is not authenticated, by default a web page is shown. Instead, we want basic authentication
         http.httpBasic(Customizer.withDefaults());
 
-        // #3. CSRF -> POST, PUT
+        // #3. CSRF -> POST, PUT, DELETE
         // CSRF => Cross Site Request Forgery
         http.csrf().disable();
 
